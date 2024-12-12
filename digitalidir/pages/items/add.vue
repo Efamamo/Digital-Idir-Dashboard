@@ -8,6 +8,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="text"
           id="name"
+          v-model="name"
         />
       </div>
 
@@ -17,6 +18,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="number"
           id="price"
+          v-model="price"
         />
       </div>
 
@@ -26,6 +28,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="number"
           id="amount"
+          v-model="amount"
         />
       </div>
 
@@ -35,6 +38,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="file"
           id="image"
+          @change="handleFileChange"
         />
       </div>
 
@@ -49,11 +53,50 @@
 </template>
 
 <script setup>
+const name = ref('');
+const price = ref(0);
+const amount = ref(0);
+const image = ref(null);
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    image.value = file;
+  }
+};
+
 useHead({
   title: 'DigitalIdir | Add Item',
 });
 
-const handleSubmit = () => {};
+const handleSubmit = async () => {
+  const formData = new FormData();
+  formData.append('name', name.value);
+  formData.append('price', price.value);
+  formData.append('amount', amount.value);
+  if (image.value) {
+    formData.append('image', image.value);
+  }
+
+  try {
+    const response = await fetch('http://localhost:5000/api/v1/items', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+
+    if (response.ok) {
+      window.location.href = '/items';
+    } else {
+      const data = await response.json();
+      console.error('Failed to add news:', data);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 </script>
 
 <style scoped></style>

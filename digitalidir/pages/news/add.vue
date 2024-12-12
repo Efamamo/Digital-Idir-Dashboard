@@ -8,6 +8,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="text"
           id="title"
+          v-model="title"
         />
       </div>
 
@@ -15,6 +16,7 @@
         <label>Description</label>
         <textarea
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
+          v-model="description"
         ></textarea>
       </div>
 
@@ -24,6 +26,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="file"
           id="image"
+          @change="handleFileChange"
         />
       </div>
 
@@ -38,11 +41,50 @@
 </template>
 
 <script setup>
+const title = ref('');
+const description = ref('');
+const image = ref(null);
+
 useHead({
   title: 'DigitalIdir | Add News',
 });
 
-const handleSubmit = () => {};
+// Handle file input change
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    image.value = file;
+  }
+};
+
+const handleSubmit = async () => {
+  const formData = new FormData();
+  formData.append('title', title.value);
+  formData.append('description', description.value);
+  if (image.value) {
+    formData.append('image', image.value);
+  }
+
+  try {
+    // Send formData to backend
+    const response = await fetch('http://localhost:5000/api/v1/news', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      window.location.href = '/news';
+    } else {
+      console.error('Failed to add news:', response.body);
+    }
+  } catch (error) {
+    console.error('Unexpected Error:', error);
+  }
+};
 </script>
 
 <style scoped></style>

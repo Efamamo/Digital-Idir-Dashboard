@@ -8,6 +8,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="text"
           id="name"
+          v-model="name"
         />
       </div>
 
@@ -17,15 +18,17 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="date"
           id="dob"
+          v-model="dob"
         />
       </div>
 
       <div class="flex flex-col gap-2 mb-4">
-        <label for="dot">Date of Passing</label>
+        <label for="dop">Date of Passing</label>
         <input
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="date"
-          id="dot"
+          id="dop"
+          v-model="dop"
         />
       </div>
 
@@ -33,6 +36,7 @@
         <label>Description</label>
         <textarea
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
+          v-model="desc"
         ></textarea>
       </div>
 
@@ -42,6 +46,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="file"
           id="image"
+          @change="handleFileChange"
         />
       </div>
 
@@ -56,11 +61,52 @@
 </template>
 
 <script setup>
+const name = ref('');
+const dob = ref(null);
+const dop = ref(null);
+const image = ref(null);
+const desc = ref(null);
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    image.value = file;
+  }
+};
 useHead({
   title: 'DigitalIdir | Add Memorial',
 });
 
-const handleSubmit = () => {};
+const handleSubmit = async () => {
+  const formData = new FormData();
+  formData.append('name', name.value);
+  formData.append('dateOfBirth', dob.value);
+  formData.append('dateOfPassing', dop.value);
+  formData.append('description', desc.value);
+
+  if (image.value) {
+    formData.append('image', image.value);
+  }
+
+  try {
+    const response = await fetch('http://localhost:5000/api/v1/memorials', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+
+    if (response.ok) {
+      window.location.href = '/memorials';
+    } else {
+      const data = await response.json();
+      console.log(data);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 </script>
 
 <style scoped></style>

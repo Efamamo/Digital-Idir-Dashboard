@@ -1,8 +1,16 @@
 <template>
   <div class="container mx-auto">
-    <h2 class="text-2xl font-semibold mb-6">Memorials</h2>
+    <div class="flex w-1/2 justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">Memorials</h2>
+      <nuxt-link
+        to="/memorials/add"
+        class="p-1.5 bg-green-600 text-white font-medium rounded-md"
+      >
+        Add New
+      </nuxt-link>
+    </div>
     <table
-      class="w-1/2 mx-auto border-collapse border border-gray-200 bg-white shadow-md rounded-md"
+      class="w-1/2 border-collapse border border-gray-200 bg-white shadow-md rounded-md"
     >
       <thead class="bg-gray-100">
         <tr>

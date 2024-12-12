@@ -8,6 +8,7 @@
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
           type="text"
           id="title"
+          v-model="title"
         />
       </div>
 
@@ -15,6 +16,7 @@
         <label>Description</label>
         <textarea
           class="border border-gray-300 focus:outline-none p-1 rounded-sm"
+          v-model="description"
         ></textarea>
       </div>
 
@@ -29,11 +31,36 @@
 </template>
 
 <script setup>
+const title = ref('');
+const description = ref('');
 useHead({
   title: 'DigitalIdir | Add Announcement',
 });
 
-const handleSubmit = () => {};
+const handleSubmit = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/v1/announcements', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: title.value,
+        description: description.value,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+
+    if (response.ok) {
+      window.location.href = '/announcements';
+    } else {
+      const data = await response.json();
+      console.log(data);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 </script>
 
 <style scoped></style>

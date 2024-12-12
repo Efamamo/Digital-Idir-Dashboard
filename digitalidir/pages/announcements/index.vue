@@ -1,6 +1,14 @@
 <template>
   <div class="mx-10">
-    <h2 class="text-2xl font-semibold mb-6">Announcements</h2>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">Announcements</h2>
+      <nuxt-link
+        to="/announcements/add"
+        class="p-1.5 bg-green-600 text-white font-medium rounded-md"
+      >
+        Add New
+      </nuxt-link>
+    </div>
     <table
       class="min-w-full border-collapse border border-gray-200 bg-white shadow-md rounded-md"
     >

@@ -1,6 +1,14 @@
 <template>
   <div class="mx-10">
-    <h2 class="text-2xl font-semibold mb-6">News</h2>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">News</h2>
+      <nuxt-link
+        to="/news/add"
+        class="p-1.5 bg-green-600 text-white font-medium rounded-md"
+      >
+        Add New
+      </nuxt-link>
+    </div>
     <table
       class="min-w-full border-collapse border border-gray-200 bg-white shadow-md rounded-md"
     >
@@ -65,9 +73,6 @@ function formatToHumanReadable(isoDate) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true, // Use 12-hour format with AM/PM
   };
 
   return date.toLocaleString('en-US', options); // Format using locale options
